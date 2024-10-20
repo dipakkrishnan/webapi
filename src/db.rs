@@ -32,4 +32,13 @@ impl Database {
         )?;
         Ok(())
     }
+
+    pub async fn delete_user(&self, name: &str) -> Result<()> {
+        let conn = self.conn.lock().await;
+        conn.execute(
+            "DELETE FROM users WHERE name = ?1",
+            [name],
+        )?;
+        Ok(())
+    }
 }
