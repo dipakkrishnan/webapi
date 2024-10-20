@@ -3,10 +3,13 @@ use axum::{
     routing::get,
     routing::post,
     Router,
+    Json,
 };
 use clap::Parser;
 mod db;
 use db::Database;
+mod models;
+use models::{CreateUserRequest};
 use std::sync::Arc;
 
 
@@ -42,10 +45,12 @@ async fn main() {
 
 async fn create_user(
     State(state): State<Arc<AppState>>,
+    Json(payload): Json<CreateUserRequest>,
 ) -> String {
-    if let Err(e) = state.db.add_user("Alice", "alice@example.com").await {
+    let name = &payload.name;
+    if let Err(e) = state.db.add_user(name, &payload.email).await {
         eprintln!("Failed to add user: {}", e);
         return "Failed to create user".to_string();
     }
-    "User created successfully".to_string()
+    format!("User {} created successfully", name)
 }
