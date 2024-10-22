@@ -41,4 +41,13 @@ impl Database {
         )?;
         Ok(())
     }
+
+    pub async fn update_user(&self, name: &str, email: &str) -> Result<()> {
+        let conn = self.conn.lock().await;
+        conn.execute(
+            "UPDATE users SET email = ?1 WHERE name = ?2",
+            [email, name],
+        )?;
+        Ok(())
+    }
 }
