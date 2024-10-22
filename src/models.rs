@@ -10,3 +10,9 @@ pub struct CreateUserRequest {
 pub struct DeleteUserRequest {
     pub name: String,
 }
+
+#[derive(Deserialize)]
+pub struct UpdateUserRequest {
+    pub name: String,
+    pub email: String,
+}

@@ -9,7 +9,7 @@ use clap::Parser;
 mod db;
 use db::Database;
 mod models;
-use models::{CreateUserRequest, DeleteUserRequest};
+use models::{CreateUserRequest, DeleteUserRequest, UpdateUserRequest};
 use std::sync::Arc;
 
 
@@ -40,6 +40,7 @@ async fn main() {
         }))
         .route("/users/create", post(create_user))
         .route("/users/delete", post(delete_user))
+        .route("/users/update", post(update_user))
         .with_state(state);
 
     // run our app with hyper, listening globally on port 3000
@@ -69,4 +70,16 @@ async fn delete_user(
         return "Failed to create user".to_string();
     }
     format!("User {} deleted successfully", name)
+}
+
+async fn update_user(
+    State(state): State<Arc<AppState>>,
+    Json(payload): Json<UpdateUserRequest>,
+) -> String {
+    let name = &payload.name;
+    if let Err(e) = state.db.update_user(name, &payload.email).await {
+        eprintln!("Failed to update user metadata: {}", e);
+        return "Failed to update user metadata".to_string();
+    }
+    format!("User {} metadata updated successfully", name)
 }
