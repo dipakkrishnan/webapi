@@ -1,6 +1,7 @@
 use rusqlite::{Connection, Result};
 use std::sync::Arc;
 use tokio::sync::Mutex;
+use std::collections::HashMap;
 
 pub struct Database {
     conn: Arc<Mutex<Connection>>, // shared mutex connection for per-thread safety
@@ -49,5 +50,9 @@ impl Database {
             [email, name],
         )?;
         Ok(())
+    }
+
+    pub async fn run_query(&self, &HashMap<str, str>) -> Result<()> {
+        // fill run query logic here with dynamic building of query string based on conditions
     }
 }
