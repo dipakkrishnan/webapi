@@ -16,8 +16,3 @@ pub struct UpdateUserRequest {
     pub name: String,
     pub email: String,
 }
-
-#[derive(Deserialize)]
-pub struct QueryRequest {
-    pub conditions: HashMap,
-}

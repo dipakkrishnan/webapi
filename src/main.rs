@@ -3,7 +3,8 @@ use axum::{
     routing::get,
     routing::post,
     Router,
-    Json,
+    extract::Path,
+    Json
 };
 use clap::Parser;
 mod db;
@@ -41,6 +42,7 @@ async fn main() {
         .route("/users/create", post(create_user))
         .route("/users/delete", post(delete_user))
         .route("/users/update", post(update_user))
+        .route("/users/:username", get(get_user))
         .with_state(state);
 
     // run our app with hyper, listening globally on port 3000
@@ -82,4 +84,12 @@ async fn update_user(
         return "Failed to update user metadata".to_string();
     }
     format!("User {} metadata updated successfully", name)
+}
+
+async fn get_user(
+    State(state): State<Arc<AppState>>,
+    Path(username): Path<String>,
+) -> String {
+    //let Err(r) = state.db.get_user(&username).await;
+    //format!("User {} metadata updated successfully", name)
 }
