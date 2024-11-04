@@ -50,4 +50,16 @@ impl Database {
         )?;
         Ok(())
     }
+
+    pub async fn query(&self, name: &str) -> Result<()> {
+        let conn = self.conn.lock().await;
+        let mut stmt = conn.prepare("SELECT * FROM users WHERE name = ?")?;
+        let mut rows = stmt.query(&[(":name", name)])?;
+        let mut names = Vec::new();
+        while let Some(row) = rows.next()? {
+            names.push(row.get(0)?);
+        }
+        eprintln!("{:?}", names);
+        Ok(())
+    }
 }
